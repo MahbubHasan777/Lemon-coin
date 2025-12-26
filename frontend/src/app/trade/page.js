@@ -136,7 +136,7 @@ export default function Trade() {
                                 value={checkAddress}
                                 onChange={(e) => setCheckAddress(e.target.value)}
                             />
-                            <button type="submit" className="btn" style={{ background: '#333' }}>Check</button>
+                            <button type="submit" className="btn btn-primary">Check</button>
                         </form>
                         {balanceDisplay && (
                             <div style={{ background: 'rgba(0,255,0,0.1)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>

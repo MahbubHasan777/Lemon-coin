@@ -36,7 +36,7 @@ export default function Address({ params }) {
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr' }}>
                         <div className="text-secondary">Balance:</div>
-                        <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{data.balance} KROWN</div>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{data.balance} LEMON</div>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr' }}>
                         <div className="text-secondary">Total Transactions:</div>
