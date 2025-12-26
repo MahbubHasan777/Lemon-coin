@@ -3,13 +3,9 @@ const crypto = require('crypto');
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
-/**
- * Transaction class - handles creation, signing, and validation of transactions
- */
+
 class TransactionUtil {
-    /**
-     * Create a new transaction hash
-     */
+
     static calculateHash(fromAddress, toAddress, amount, timestamp) {
         return crypto
             .createHash('sha256')
@@ -17,18 +13,14 @@ class TransactionUtil {
             .digest('hex');
     }
 
-    /**
-     * Sign a transaction with private key
-     */
+
     static sign(txHash, privateKey) {
         const key = ec.keyFromPrivate(privateKey);
         const sig = key.sign(txHash, 'base64');
         return sig.toDER('hex');
     }
 
-    /**
-     * Verify transaction signature
-     */
+
     static verify(txHash, signature, fromAddress) {
         if (!fromAddress) return true; // Mining reward
         if (!signature) return false;
@@ -41,9 +33,7 @@ class TransactionUtil {
         }
     }
 
-    /**
-     * Generate new wallet keypair
-     */
+
     static generateWallet() {
         const key = ec.genKeyPair();
         return {
@@ -53,22 +43,16 @@ class TransactionUtil {
         };
     }
 
-    /**
-     * Get public key from private key
-     */
+
     static getPublicKey(privateKey) {
         const key = ec.keyFromPrivate(privateKey);
         return key.getPublic('hex');
     }
 }
 
-/**
- * Block class - handles block creation and mining
- */
+
 class BlockUtil {
-    /**
-     * Calculate block hash
-     */
+
     static calculateHash(previousHash, timestamp, transactions, nonce) {
         return crypto
             .createHash('sha256')
@@ -76,9 +60,7 @@ class BlockUtil {
             .digest('hex');
     }
 
-    /**
-     * Mine a block - find valid hash with proof of work
-     */
+
     static mineBlock(previousHash, timestamp, transactions, difficulty) {
         let nonce = 0;
         let hash;
@@ -92,9 +74,7 @@ class BlockUtil {
         return { hash, nonce };
     }
 
-    /**
-     * Validate block hash
-     */
+
     static isValidHash(block) {
         const calculatedHash = this.calculateHash(
             block.previousHash,
@@ -106,13 +86,9 @@ class BlockUtil {
     }
 }
 
-/**
- * Chain utility functions
- */
+
 class ChainUtil {
-    /**
-     * Create genesis block data
-     */
+
     static createGenesisBlock() {
         const timestamp = Date.parse('2024-01-01');
         const previousHash = '0';

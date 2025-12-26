@@ -30,7 +30,7 @@ class BlockchainService {
         }
     }
 
-    // Block Methods
+
     async getAllBlocks(page = 1, limit = 10) {
         const skip = (page - 1) * limit;
         const blocks = await this.blockModel
@@ -50,7 +50,7 @@ class BlockchainService {
         return await this.blockModel.findOne().sort({ timestamp: -1 });
     }
 
-    // Transaction Methods
+
     async getAllTransactions(page = 1, limit = 10) {
         const skip = (page - 1) * limit;
         const transactions = await this.transactionModel
@@ -71,12 +71,12 @@ class BlockchainService {
         const hash = TransactionUtil.calculateHash(fromAddress, toAddress, amount, timestamp);
         const signature = TransactionUtil.sign(hash, privateKey);
 
-        // Verify signature
+
         if (!TransactionUtil.verify(hash, signature, fromAddress)) {
             throw new Error('Invalid signature');
         }
 
-        // Check balance
+
         const balance = await this.getBalance(fromAddress);
         if (balance < amount) {
             throw new Error('Insufficient balance');
@@ -102,9 +102,9 @@ class BlockchainService {
         return this.pendingTransactions;
     }
 
-    // Mining Methods
+
     async minePendingTransactions(minerAddress) {
-        // Add mining reward transaction
+
         const rewardTx = {
             hash: TransactionUtil.calculateHash(null, minerAddress, this.miningReward, Date.now()),
             fromAddress: null,
@@ -140,10 +140,10 @@ class BlockchainService {
 
         await this.blockModel.create(newBlock);
 
-        // Save reward transaction
+
         await this.transactionModel.create(rewardTx);
 
-        // Update pending transactions to confirmed
+
         for (const tx of this.pendingTransactions) {
             await this.transactionModel.updateOne(
                 { hash: tx.hash },
@@ -151,7 +151,7 @@ class BlockchainService {
             );
         }
 
-        // Update wallet balances
+
         await this.updateWalletBalance(minerAddress, this.miningReward);
         for (const tx of this.pendingTransactions) {
             if (tx.fromAddress) {
@@ -165,7 +165,7 @@ class BlockchainService {
         return newBlock;
     }
 
-    // Wallet/Address Methods
+
     async getBalance(address) {
         const wallet = await this.walletModel.findOne({ address });
         return wallet ? wallet.balance : 0;
@@ -197,7 +197,7 @@ class BlockchainService {
         );
     }
 
-    // Stats
+
     async getStats() {
         const totalBlocks = await this.blockModel.countDocuments();
         const totalTransactions = await this.transactionModel.countDocuments();
@@ -214,7 +214,7 @@ class BlockchainService {
         };
     }
 
-    // Generate new wallet with bonus
+
     async createWalletWithBonus() {
         const wallet = TransactionUtil.generateWallet();
         // Give 1000 LEMON bonus
@@ -226,7 +226,7 @@ class BlockchainService {
         };
     }
 
-    // Generate new wallet
+
     generateWallet() {
         return TransactionUtil.generateWallet();
     }
