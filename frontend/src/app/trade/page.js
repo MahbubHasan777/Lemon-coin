@@ -12,11 +12,15 @@ export default function Trade() {
     const [wallet, setWallet] = useState(null);
     const [status, setStatus] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [checkAddress, setCheckAddress] = useState('');
+    const [balanceDisplay, setBalanceDisplay] = useState(null);
 
     const generateWallet = async () => {
         try {
             const res = await axios.post('http://localhost:3001/api/addresses/generate');
             setWallet(res.data);
+            setCheckAddress(res.data.address);
+            setBalanceDisplay(null); // Reset manually checked balance
             setFormData(prev => ({
                 ...prev,
                 fromAddress: res.data.address,
@@ -27,14 +31,24 @@ export default function Trade() {
         }
     };
 
+    const fetchBalance = async (address) => {
+        try {
+            const res = await axios.get(`http://localhost:3001/api/addresses/${address}/balance`);
+            return res.data.balance;
+        } catch (error) {
+            console.error('Error fetching balance:', error);
+            return null;
+        }
+    };
+
     const checkBalance = async (e) => {
         e.preventDefault();
         const address = e.target.balanceAddress.value;
-        try {
-            const res = await axios.get(`http://localhost:3001/api/addresses/${address}/balance`);
-            alert(`Balance: ${res.data.balance} LEMON`);
-        } catch (error) {
-            alert('Error fetching balance');
+        const balance = await fetchBalance(address);
+        if (balance !== null) {
+            setBalanceDisplay(`${balance} LEMON`);
+        } else {
+            setBalanceDisplay('Error fetching balance');
         }
     };
 
@@ -53,6 +67,21 @@ export default function Trade() {
             });
 
             setStatus({ type: 'success', message: 'Transaction mined and confirmed!' });
+
+            // Auto-refresh balance if checkAddress is set
+            if (checkAddress) {
+                const newBalance = await fetchBalance(checkAddress);
+                if (newBalance !== null) {
+                    // Update initial balance display if it matches current wallet
+                    if (wallet && wallet.address === checkAddress) {
+                        setWallet(prev => ({ ...prev, balance: newBalance }));
+                    }
+                    // Also update the manual check display if it matches
+                    setBalanceDisplay(`${newBalance} LEMON`);
+
+                    setStatus({ type: 'success', message: `Transaction confirmed! New Balance: ${newBalance} LEMON` });
+                }
+            }
         } catch (error) {
             setStatus({ type: 'error', message: error.response?.data?.error || error.message });
         }
@@ -96,10 +125,25 @@ export default function Trade() {
 
                     <div style={{ marginTop: '2rem', borderTop: '1px solid #333', paddingTop: '1rem' }}>
                         <h4 style={{ marginBottom: '0.5rem' }}>Check Balance</h4>
-                        <form onSubmit={checkBalance} style={{ display: 'flex', gap: '0.5rem' }}>
-                            <input name="balanceAddress" type="text" placeholder="Wallet Address" className="search-input" style={{ margin: 0 }} required />
+                        <form onSubmit={checkBalance} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                            <input
+                                name="balanceAddress"
+                                type="text"
+                                placeholder="Wallet Address"
+                                className="search-input"
+                                style={{ margin: 0 }}
+                                required
+                                value={checkAddress}
+                                onChange={(e) => setCheckAddress(e.target.value)}
+                            />
                             <button type="submit" className="btn" style={{ background: '#333' }}>Check</button>
                         </form>
+                        {balanceDisplay && (
+                            <div style={{ background: 'rgba(0,255,0,0.1)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                <span className="text-secondary">Current Balance:</span>
+                                <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#4ade80' }}>{balanceDisplay}</div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
