@@ -36,3 +36,43 @@ A modern, dark-themed Blockchain Explorer clone (rebranded to **Lemon Network**)
 - Visit `http://localhost:3000`.
 - Search for blocks, transactions, or addresses using the new filterable search bar.
 - Use the **Footer** to navigate (dummy links included for UI demo).
+
+## 📂 Project Structure & Routes
+
+### 🖥️ Frontend Routes (Next.js)
+
+| Route | Description |
+|-------|-------------|
+| `/` | **Dashboard**: Shows real-time network stats, latest blocks, and latest transactions. |
+| `/blocks` | **Block Explorer**: Paginated list of all blocks in the chain. |
+| `/blocks/[hash]` | **Block Details**: View detailed info about a specific block (miner, transactions, etc.). |
+| `/transactions` | **Transaction Explorer**: Paginated list of all transactions. |
+| `/transactions/[hash]` | **Transaction Details**: View sender, receiver, amount, and status of a transaction. |
+| `/address/[address]` | **Address/Wallet Explorer**: View balance and transaction history for a specific wallet address. |
+| `/trade` | **Wallet & Tools**: Generate new wallets, check balances, and simulate transactions. |
+
+### 🔗 Backend API Endpoints (NestJS)
+
+#### Blocks
+- `GET /api/blocks`: Get paginated blocks.
+- `GET /api/blocks/latest`: Get the latest block.
+- `GET /api/blocks/:hash`: Get block details by hash.
+
+#### Transactions
+- `GET /api/transactions`: Get paginated transactions.
+- `GET /api/transactions/pending`: Get transactions waiting in the mempool.
+- `GET /api/transactions/:hash`: Get transaction details.
+- `POST /api/transactions`: Create/Broadcast a new transaction.
+  - Body: `{ fromAddress, toAddress, amount, privateKey }`
+
+#### Addresses (Wallets)
+- `GET /api/addresses/:address`: Get wallet summary (balance & tx count).
+- `GET /api/addresses/:address/balance`: Get just the balance.
+- `GET /api/addresses/:address/transactions`: Get transaction history for an address.
+- `POST /api/addresses/generate`: Create a new wallet (returns Public & Private key).
+  - *Bonus*: Automatically gives 1000 LEMON coins for testing.
+
+#### Mining & Stats
+- `POST /api/mining/mine`: Trigger the mining process to confirm pending transactions.
+- `GET /api/stats`: Global blockchain statistics (Supply, Total Blocks, Gas Price).
+
