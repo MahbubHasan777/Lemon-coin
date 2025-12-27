@@ -11,7 +11,7 @@ export default function BlockDetail({ params }) {
     useEffect(() => {
         const fetchBlock = async () => {
             try {
-                const res = await axios.get(`http://localhost:3001/api/blocks/${params.hash}`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blocks/${params.hash}`);
                 setBlock(res.data);
             } catch (error) {
                 console.error(error);

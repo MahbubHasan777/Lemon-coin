@@ -17,7 +17,7 @@ export default function Trade() {
 
     const generateWallet = async () => {
         try {
-            const res = await axios.post('http://localhost:3001/api/addresses/generate');
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/addresses/generate`);
             setWallet(res.data);
             setCheckAddress(res.data.address);
             setBalanceDisplay(null); // Reset manually checked balance
@@ -33,7 +33,7 @@ export default function Trade() {
 
     const fetchBalance = async (address) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/addresses/${address}/balance`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/addresses/${address}/balance`);
             return res.data.balance;
         } catch (error) {
             console.error('Error fetching balance:', error);
@@ -58,11 +58,11 @@ export default function Trade() {
         setStatus(null);
 
         try {
-            const res = await axios.post('http://localhost:3001/api/transactions', formData);
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/transactions`, formData);
             setStatus({ type: 'success', message: 'Transaction submitted successfully! Waiting for mining...' });
 
             // Auto-mine for demo purposes
-            await axios.post('http://localhost:3001/api/mining/mine', {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/mining/mine`, {
                 minerAddress: '04c35e9f85494c256372109867540217983694021' // Default miner
             });
 

@@ -17,7 +17,7 @@ export default function Transactions() {
     const fetchTransactions = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:3001/api/transactions?page=${page}&limit=20`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/transactions?page=${page}&limit=20`);
             setTransactions(res.data.transactions);
             setTotal(res.data.total);
         } catch (error) {

@@ -17,7 +17,7 @@ export default function Blocks() {
     const fetchBlocks = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:3001/api/blocks?page=${page}&limit=20`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/blocks?page=${page}&limit=20`);
             setBlocks(res.data.blocks);
             setTotal(res.data.total);
         } catch (error) {

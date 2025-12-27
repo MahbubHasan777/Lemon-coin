@@ -11,7 +11,7 @@ export default function Address({ params }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:3001/api/addresses/${params.address}`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/addresses/${params.address}`);
                 setData(res.data);
             } catch (error) {
                 console.error(error);
