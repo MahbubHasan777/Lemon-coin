@@ -38,7 +38,7 @@ export default function BlockDetail({ params }) {
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr' }}>
                         <div className="text-secondary">Timestamp:</div>
-                        <div>{new Date(block.timestamp).toLocaleString()} ({formatDistanceToNow(new Date(block.timestamp), { addSuffix: true })})</div>
+                        <div>{block.timestamp ? new Date(block.timestamp).toLocaleString() : 'N/A'} ({block.timestamp ? formatDistanceToNow(new Date(block.timestamp), { addSuffix: true }) : ''})</div>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr' }}>
                         <div className="text-secondary">Height/Nonce:</div>
@@ -69,7 +69,7 @@ export default function BlockDetail({ params }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {block.transactions.map(txHash => (
+                            {block.transactions && block.transactions.map(txHash => (
                                 <tr key={txHash}>
                                     <td>
                                         <Link href={`/transactions/${txHash}`} className="text-primary hover:underline">
@@ -78,7 +78,7 @@ export default function BlockDetail({ params }) {
                                     </td>
                                 </tr>
                             ))}
-                            {block.transactions.length === 0 && (
+                            {(!block.transactions || block.transactions.length === 0) && (
                                 <tr>
                                     <td colSpan="1" className="text-center">No transactions in this block</td>
                                 </tr>

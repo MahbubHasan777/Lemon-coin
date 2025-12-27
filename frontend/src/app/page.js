@@ -36,6 +36,8 @@ export default function Home() {
 
     const handleSearch = (e) => {
         e.preventDefault();
+        if (!search || search.trim() === '') return;
+
         if (search.length === 64) {
             window.location.href = `/blocks/${search}`;
         } else {
